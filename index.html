@@ -529,13 +529,13 @@
             const baseClasses = "inline-flex items-center justify-center font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed";
             
             const variants = {
-                primary: "bg-primary-500 hover:bg-primary-600 text-white focus:ring-primary-500",
-                secondary: "bg-gray-100 hover:bg-gray-200 text-gray-700 focus:ring-gray-500",
-                success: "bg-green-500 hover:bg-green-600 text-white focus:ring-green-500",
-                warning: "bg-yellow-500 hover:bg-yellow-600 text-white focus:ring-yellow-500",
-                danger: "bg-red-500 hover:bg-red-600 text-white focus:ring-red-500",
-                outline: "border-2 border-primary-500 text-primary-500 hover:bg-primary-50 focus:ring-primary-500",
-                ghost: "text-gray-600 hover:bg-gray-100 focus:ring-gray-500"
+                primary: "bg-primary-500 hover:bg-primary-600 active:bg-primary-700 text-white focus:ring-primary-500",
+                secondary: "bg-gray-100 hover:bg-gray-200 active:bg-gray-300 text-gray-700 focus:ring-gray-500",
+                success: "bg-green-500 hover:bg-green-600 active:bg-green-700 text-white focus:ring-green-500",
+                warning: "bg-yellow-500 hover:bg-yellow-600 active:bg-yellow-700 text-white focus:ring-yellow-500",
+                danger: "bg-red-500 hover:bg-red-600 active:bg-red-700 text-white focus:ring-red-500",
+                outline: "border-2 border-primary-500 text-primary-500 hover:bg-primary-50 active:bg-primary-100 focus:ring-primary-500",
+                ghost: "text-gray-600 hover:bg-gray-100 active:bg-gray-200 focus:ring-gray-500"
             };
             
             const sizes = {
@@ -549,13 +549,15 @@
             const widthClass = fullWidth ? "w-full" : "";
             const finalClassName = `${baseClasses} ${variants[variant]} ${sizes[size]} ${widthClass} ${className}`;
             
-            return (
-                <button
-                    type={type}
-                    onClick={onClick}
-                    disabled={disabled || loading}
-                    className={finalClassName}
-                >
+                            return (
+                    <button
+                        type={type}
+                        onClick={onClick}
+                        disabled={disabled || loading}
+                        className={finalClassName}
+                        aria-label={typeof children === 'string' ? children : 'Button'}
+                        aria-busy={loading}
+                    >
                     {loading && (
                         <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-current mr-2"></div>
                     )}
@@ -1156,6 +1158,7 @@
             const variants = {
                 default: "bg-gray-100 text-gray-800",
                 primary: "bg-primary-100 text-primary-800",
+                blue: "bg-blue-100 text-blue-800",
                 success: "bg-green-100 text-green-800",
                 warning: "bg-yellow-100 text-yellow-800", 
                 error: "bg-red-100 text-red-800"
@@ -1450,6 +1453,7 @@
                                         <Flex gap="sm" wrap>
                                             <Badge variant="default">Default</Badge>
                                             <Badge variant="primary">Primary</Badge>
+                                            <Badge variant="blue">Blue</Badge>
                                             <Badge variant="success">Success</Badge>
                                             <Badge variant="warning">Warning</Badge>
                                             <Badge variant="error">Error</Badge>
