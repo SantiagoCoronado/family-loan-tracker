@@ -25,8 +25,31 @@
     <link rel="apple-touch-icon" sizes="192x192" href="/icons/icon-192.png">
     <link rel="shortcut icon" href="/icons/icon.svg">
     
-    <!-- Tailwind CSS via CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Tailwind CSS via CDN - Production optimized -->
+    <script src="https://cdn.tailwindcss.com/3.4.0"></script>
+    <script>
+        // Configure Tailwind for production
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#eff6ff',
+                            100: '#dbeafe',
+                            200: '#bfdbfe',
+                            300: '#93c5fd',
+                            400: '#60a5fa',
+                            500: '#3b82f6',
+                            600: '#2563eb',
+                            700: '#1d4ed8',
+                            800: '#1e40af',
+                            900: '#1e3a8a',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
     
     <!-- Tailwind Configuration -->
     <script>
@@ -46,12 +69,11 @@
         }
     </script>
     
-    <!-- React via CDN -->
-    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
-    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <!-- React via CDN - Production builds -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
     
-    <!-- Babel for JSX transformation -->
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <!-- Production ready - No Babel needed for React.createElement -->
     
     <!-- PWA Meta Tags -->
     <meta name="theme-color" content="#3b82f6">
@@ -68,7 +90,7 @@
     <div id="app" class="min-h-screen"></div>
     
     <!-- Application JavaScript -->
-    <script type="text/babel">
+    <script>
         const { useState, useEffect, useMemo, useReducer, useCallback } = React;
         
         // ============================================================================
@@ -1802,8 +1824,11 @@
         };
         
         // Initialize the app
-        const root = ReactDOM.createRoot(document.getElementById('app'));
-        root.render(<App />);
+        const rootElement = document.getElementById('app');
+        if (rootElement) {
+            const root = ReactDOM.createRoot(rootElement);
+            root.render(React.createElement(App));
+        }
     </script>
 
     <!-- Service Worker Registration -->

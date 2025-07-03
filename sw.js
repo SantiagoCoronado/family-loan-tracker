@@ -10,7 +10,11 @@ const DATA_CACHE_NAME = 'family-loan-data-v1.0.0';
 const FILES_TO_CACHE = [
     '/',
     '/index.html',
-    '/manifest.json',
+    '/manifest.json'
+];
+
+// External resources that need special handling due to CORS
+const EXTERNAL_RESOURCES = [
     'https://cdn.tailwindcss.com/3.4.0',
     'https://unpkg.com/react@18/umd/react.production.min.js',
     'https://unpkg.com/react-dom@18/umd/react-dom.production.min.js'
@@ -23,8 +27,27 @@ self.addEventListener('install', (event) => {
     event.waitUntil(
         caches.open(CACHE_NAME)
             .then((cache) => {
-                console.log('[ServiceWorker] Pre-caching offline page');
+                console.log('[ServiceWorker] Pre-caching core files');
+                // Cache core files first
                 return cache.addAll(FILES_TO_CACHE);
+            })
+            .then(() => {
+                // Try to cache external resources, but don't fail if CORS blocks them
+                return caches.open(CACHE_NAME).then((cache) => {
+                    return Promise.allSettled(
+                        EXTERNAL_RESOURCES.map(url => {
+                            return fetch(url, { mode: 'cors' })
+                                .then(response => {
+                                    if (response.ok) {
+                                        return cache.put(url, response);
+                                    }
+                                })
+                                .catch(() => {
+                                    console.log(`[ServiceWorker] Could not cache external resource: ${url}`);
+                                });
+                        })
+                    );
+                });
             })
             .then(() => {
                 // Take control immediately
