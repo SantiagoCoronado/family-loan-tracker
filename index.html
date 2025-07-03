@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Family Loan Tracker</title>
+    
+    <!-- Tailwind CSS via CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Tailwind Configuration -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#f0f9ff',
+                            500: '#3b82f6',
+                            600: '#2563eb',
+                            700: '#1d4ed8'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- React via CDN -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    
+    <!-- Babel for JSX transformation -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    
+    <!-- PWA Meta Tags -->
+    <meta name="theme-color" content="#3b82f6">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="Family Loan Tracker">
+    
+    <!-- Icons and Manifest (will be created later) -->
+    <link rel="manifest" href="/manifest.json">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💰</text></svg>">
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <!-- Main Application Container -->
+    <div id="app" class="min-h-screen"></div>
+    
+    <!-- Application JavaScript -->
+    <script type="text/babel">
+        const { useState, useEffect, useMemo, useReducer, useCallback } = React;
+        
+        // Main App Component
+        const App = () => {
+            const [isLoading, setIsLoading] = useState(true);
+            
+            // Simulate initial loading
+            useEffect(() => {
+                setTimeout(() => setIsLoading(false), 1000);
+            }, []);
+            
+            if (isLoading) {
+                return (
+                    <div className="min-h-screen flex items-center justify-center">
+                        <div className="text-center">
+                            <div className="text-6xl mb-4">💰</div>
+                            <div className="text-xl font-semibold text-gray-700">Family Loan Tracker</div>
+                            <div className="text-sm text-gray-500 mt-2">Loading...</div>
+                        </div>
+                    </div>
+                );
+            }
+            
+            return (
+                <div className="min-h-screen bg-gray-50">
+                    <Header />
+                    <main className="container mx-auto px-4 py-8">
+                        <Dashboard />
+                        <LoanManager />
+                    </main>
+                </div>
+            );
+        };
+        
+        // Header Component
+        const Header = () => {
+            return (
+                <header className="bg-white shadow-sm border-b">
+                    <div className="container mx-auto px-4 py-4">
+                        <div className="flex items-center justify-between">
+                            <div className="flex items-center space-x-3">
+                                <div className="text-2xl">💰</div>
+                                <div>
+                                    <h1 className="text-xl font-bold text-gray-900">Family Loan Tracker</h1>
+                                    <p className="text-sm text-gray-500">Manage family loans with ease</p>
+                                </div>
+                            </div>
+                            <div className="flex items-center space-x-3">
+                                <span className="text-sm text-gray-600">Welcome back!</span>
+                                <div className="w-8 h-8 bg-primary-500 rounded-full flex items-center justify-center text-white font-semibold">
+                                    U
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </header>
+            );
+        };
+        
+        // Dashboard Component
+        const Dashboard = () => {
+            // Mock data for testing
+            const stats = {
+                totalDebt: 15000,
+                monthlyDue: 2500,
+                activeLoans: 3
+            };
+            
+            return (
+                <div className="mb-8">
+                    <h2 className="text-2xl font-bold text-gray-900 mb-6">Dashboard</h2>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <StatCard 
+                            title="Total Debt" 
+                            value={`$${stats.totalDebt.toLocaleString()}`}
+                            icon="💳"
+                            color="text-red-600"
+                        />
+                        <StatCard 
+                            title="Monthly Due" 
+                            value={`$${stats.monthlyDue.toLocaleString()}`}
+                            icon="📅"
+                            color="text-orange-600"
+                        />
+                        <StatCard 
+                            title="Active Loans" 
+                            value={stats.activeLoans}
+                            icon="📊"
+                            color="text-blue-600"
+                        />
+                    </div>
+                </div>
+            );
+        };
+        
+        // Reusable Stat Card Component
+        const StatCard = ({ title, value, icon, color }) => {
+            return (
+                <div className="bg-white rounded-lg shadow-sm border p-6">
+                    <div className="flex items-center justify-between">
+                        <div>
+                            <p className="text-sm font-medium text-gray-600">{title}</p>
+                            <p className={`text-2xl font-bold ${color}`}>{value}</p>
+                        </div>
+                        <div className="text-3xl">{icon}</div>
+                    </div>
+                </div>
+            );
+        };
+        
+        // Loan Manager Component
+        const LoanManager = () => {
+            const [loans] = useState([]);
+            
+            return (
+                <div>
+                    <div className="flex items-center justify-between mb-6">
+                        <h2 className="text-2xl font-bold text-gray-900">Your Loans</h2>
+                        <Button 
+                            onClick={() => alert('Add Loan feature coming soon!')}
+                            className="bg-primary-500 hover:bg-primary-600 text-white"
+                        >
+                            Add New Loan
+                        </Button>
+                    </div>
+                    
+                    {loans.length === 0 ? (
+                        <EmptyState />
+                    ) : (
+                        <LoanList loans={loans} />
+                    )}
+                </div>
+            );
+        };
+        
+        // Empty State Component
+        const EmptyState = () => {
+            return (
+                <div className="bg-white rounded-lg shadow-sm border p-12 text-center">
+                    <div className="text-6xl mb-4">📝</div>
+                    <h3 className="text-lg font-semibold text-gray-900 mb-2">No loans yet</h3>
+                    <p className="text-gray-500 mb-6">Start by adding your first family loan to begin tracking payments.</p>
+                    <Button 
+                        onClick={() => alert('Add Loan feature coming soon!')}
+                        className="bg-primary-500 hover:bg-primary-600 text-white"
+                    >
+                        Add Your First Loan
+                    </Button>
+                </div>
+            );
+        };
+        
+        // Reusable Button Component
+        const Button = ({ children, onClick, className = "", disabled = false }) => {
+            return (
+                <button
+                    onClick={onClick}
+                    disabled={disabled}
+                    className={`px-4 py-2 rounded-lg font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 ${
+                        disabled 
+                            ? 'bg-gray-300 text-gray-500 cursor-not-allowed' 
+                            : 'hover:shadow-md active:transform active:scale-95'
+                    } ${className}`}
+                >
+                    {children}
+                </button>
+            );
+        };
+        
+        // Loan List Component (placeholder)
+        const LoanList = ({ loans }) => {
+            return (
+                <div className="space-y-4">
+                    {loans.map(loan => (
+                        <div key={loan.id} className="bg-white rounded-lg shadow-sm border p-6">
+                            Loan component will be implemented in Phase 2
+                        </div>
+                    ))}
+                </div>
+            );
+        };
+        
+        // Initialize the app
+        const root = ReactDOM.createRoot(document.getElementById('app'));
+        root.render(<App />);
+    </script>
+</body>
+</html> 
